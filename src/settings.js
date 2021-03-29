@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'Vue Admin Template',
+  title: 'Nwcd PS QA',
 
   /**
    * @type {boolean} true | false

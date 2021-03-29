@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getList(params) {
+export function getCaseMeasure(params) {
   return request({
-    url: '/api/case/list',
+    url: '/api/caseresult/',
     method: 'get',
     params
   })

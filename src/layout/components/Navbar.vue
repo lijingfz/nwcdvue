@@ -16,11 +16,11 @@
               Home
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
-            <el-dropdown-item>Github</el-dropdown-item>
+          <a target="_blank" href="https://nwcd-wiki.zhy.aws-border.cn/NWCD_Internal_Documents/DevSupport_PEK_PEK_DevSupport.html">
+            <el-dropdown-item>NWCD Wiki</el-dropdown-item>
           </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
+          <a target="_blank" href="https://paragon-cn.amazon.com/hz/search">
+            <el-dropdown-item>Paragon</el-dropdown-item>
           </a>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">Log Out</span>
@@ -52,7 +52,8 @@ export default {
       this.$store.dispatch('app/toggleSideBar')
     },
     async logout() {
-      await this.$store.dispatch('user/logout')
+      // await this.$store.dispatch('user/logout')
+      await this.$store.dispatch('user/resetToken')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }

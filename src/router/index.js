@@ -64,7 +64,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'table',
-        name: 'Table',
+        name: 'table',
         component: () => import('@/views/table/index'),
         meta: { title: 'Table', icon: 'table' }
       },
@@ -72,7 +72,8 @@ export const constantRoutes = [
         path: 'tree',
         name: 'Tree',
         component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        meta: { title: 'Tree', icon: 'tree' },
+        hidden: true
       }
     ]
   },
@@ -87,7 +88,8 @@ export const constantRoutes = [
         component: () => import('@/views/form/index'),
         meta: { title: 'Form', icon: 'form' }
       }
-    ]
+    ],
+    hidden: true
   },
 
   {
@@ -146,7 +148,8 @@ export const constantRoutes = [
         name: 'Menu2',
         meta: { title: 'menu2' }
       }
-    ]
+    ],
+    hidden: true
   },
 
   {
@@ -155,7 +158,8 @@ export const constantRoutes = [
     children: [
       {
         path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        meta: { title: 'External Link', icon: 'link' },
+        hidden: true
       }
     ]
   },

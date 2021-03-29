@@ -7,12 +7,14 @@ import { getToken } from '@/utils/auth'
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  // headers: {
-  //   'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8;'
-  // },
+  // headers: { 'Content-Type': 'multipart/form-data' },
+  headers: {
+    'Content-Type': 'application/json; charset=utf-8'
+  },
   timeout: 5000 // request timeout
 })
 // request interceptor
+console.log('jingamz0319:')
 service.interceptors.request.use(
   config => {
     // do something before request is sent
@@ -72,7 +74,6 @@ service.interceptors.response.use(
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       // console.log('jingamz0315:', res.data.list)
-      // console.log('jingamz0320:', res)
       return res
     }
   },
