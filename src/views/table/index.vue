@@ -3,6 +3,8 @@
     <div class="filter-container">
       <el-input v-model="listQuery.reviewer" placeholder="reviewer" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.owner" placeholder="Case_owner" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.if_assign" placeholder="if_assign" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.if_reviewed" placeholder="if_reviewed" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- <el-input v-model="listQuery.reviewer" placeholder="Case_Reviewer" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" /> -->
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
@@ -24,7 +26,7 @@
       <el-table-column label="Title">
         <template slot-scope="scope">
           {{ scope.row.case_title }}
-          <el-tag>{{ scope.row.id }}</el-tag>
+          <el-tag>{{ scope.row.if_reviewed }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="owner" width="110" align="center">
@@ -49,11 +51,12 @@
           </el-select>
         </template>
       </el-table-column>
-      <el-table-column label="Actions" width="230" align="right" class-name="small-padding fixed-width">
+      <el-table-column label="Actions" width="280" align="right" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button v-show="row.if_assign==='Y'" type="primary" size="mini" @click="handleUpdate(row)">Review</el-button>
+          <el-button v-if="row.if_assign==='Y' && role === 2" type="warning" size="mini" @click="handleUpdate(row)">Confirm</el-button>
+          <el-button v-if="row.if_assign==='Y' && role === 1" type="primary" size="mini" @click="handleUpdate(row)">Review</el-button>
           <el-button v-if="row.if_assign==='N'" slot="reference" type="danger" size="mini" @click="submitRowClick(row)"> 提交 </el-button>
-          <el-button v-if="row.if_assign==='Y'" slot="reference" type="success" size="mini" @click="submitRowClick(row)"> 提交 </el-button>
+          <!-- <el-button v-if="row.if_assign==='Y'" slot="reference" type="success" size="mini" @click="submitRowClick(row)"> 提交 </el-button> -->
         </template>
       </el-table-column>
       <el-table-column
@@ -360,12 +363,15 @@ Try to check every possible cause for customer issue"
           <el-form-item label="Remark">
             <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
           </el-form-item>
+          <el-form-item v-show="role === 2" label="Confirm">
+            <el-input v-model="temp.confirm" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">
             Cancel
           </el-button>
-          <el-button v-show="temp.review_flag ==='N' " type="primary" @click="handleReviewResult()">
+          <el-button v-show="temp.review_flag ==='N' || role === 2" type="primary" @click="handleReviewResult()">
             Confirm
           </el-button>
         </div>
@@ -380,6 +386,7 @@ import { getList } from '@/api/table'
 import { putData } from '@/api/update'
 import { putReviewData } from '@/api/updateReview'
 import { getCaseMeasure } from '@/api/measure'
+import { mapGetters } from 'vuex'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 const checkResult = [
@@ -420,6 +427,8 @@ export default {
         case_id: undefined,
         owner: undefined,
         reviewer: undefined,
+        if_assign: undefined,
+        if_reviewed: undefined,
         sort: '+id'
       },
       dialogFormVisible: false,
@@ -433,7 +442,7 @@ export default {
       summitButton: false,
       checkResult,
       mycase_title: undefined,
-      mymeasure1: undefined,
+      // mymeasure1: undefined,
       score1: 10,
       score2: 5,
       score3: 3,
@@ -464,6 +473,7 @@ export default {
         measure20: 2,
         review_flag: 'N',
         remark: 'Null',
+        confirm: 'Null',
         measure1Score: 10,
         measure2Score: 10,
         measure3Score: 5,
@@ -484,6 +494,7 @@ export default {
         measure18Score: 3,
         review_score: 100
       },
+      row_data: {},
       options: [
         {
           value: 'jingamz',
@@ -510,6 +521,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'name',
+      'role'
+    ]),
     sumScore: function() {
       return (this.temp.measure1Score + this.temp.measure2Score + this.temp.measure3Score + this.temp.measure4Score +
       this.temp.measure5Score + this.temp.measure6Score + this.temp.measure7Score + this.temp.measure8Score +
@@ -527,6 +542,7 @@ export default {
       this.listLoading = true
       getList(this.listQuery).then((response) => {
         this.list = response.data.list
+        // console.log(response.data.list)
         this.total = response.data.count
         console.log(response.data.count)
         this.listLoading = false
@@ -534,7 +550,7 @@ export default {
     },
     fetchMeasure(row) {
       getCaseMeasure(row).then((response) => {
-        console.log('jingamz0321!', response.data)
+        // console.log('jingamz0321!', response.data)
         this.responselist = response.data
         this.temp.case_id = response.data.case_id
         this.temp.measure1 = response.data.measure1
@@ -557,6 +573,7 @@ export default {
         this.temp.measure18 = response.data.measure18
         this.temp.review_flag = response.data.review_flag
         this.temp.remark = response.data.review_content
+        this.temp.confirm = response.data.confirm_content
         this.temp.measure1 !== 0 ? this.temp.measure1Score = this.score1 : this.temp.measure1Score = 0
         this.temp.measure2 !== 0 ? this.temp.measure2Score = this.score1 : this.temp.measure2Score = 0
         this.temp.measure3 !== 0 ? this.temp.measure3Score = this.score2 : this.temp.measure3Score = 0
@@ -580,8 +597,8 @@ export default {
     submitRowClick(row) {
       if (row.qa_selection_casecol) {
         row.if_assign = 'Y'
-        console.log(row.qa_selection_casecol, row.case_id)
-        const mydata = { case_id: row.case_id, value: row.qa_selection_casecol, if_assign: row.if_assign }
+        console.log(row.qa_selection_casecol, row.case_id, row.if_reviewed)
+        const mydata = { case_id: row.case_id, value: row.qa_selection_casecol, if_assign: row.if_assign, if_reviewed: row.if_reviewed }
         putData(mydata).then((response) => {
           console.log(response)
           this.$message({
@@ -603,16 +620,22 @@ export default {
       //   this.$refs['dataForm'].clearValidate()
       // })
       // this.$nextTick(this.fetchMeasure({ id: row.case_id }))
+      this.row_data = row
       this.fetchMeasure({ id: row.case_id })
       // this.temp.measure1 = 2
       this.dialogFormVisible = true
       this.mycase_title = row.case_title
-      console.log('Triggered!!', this.mycase_id)
+      console.log('Triggered!!', this.row_data)
     },
-    handleReviewResult() {
+    handleconfirm(row) {
+      console.log('handleCase confirm !!')
+    },
+    handleReviewResult(row) {
+      // console.log('chuan ru:', this.row_data)
       this.temp.review_score = this.sumScore
       this.temp.review_flag = 'Y'
       if (this.temp.remark === null) { this.temp.remark = 'null' }
+      if (this.temp.confirm === null) { this.temp.confirm = 'null' }
       console.log('Handle Review result!', this.temp)
       putReviewData(this.temp).then((response) => {
         console.log(response)
@@ -621,6 +644,10 @@ export default {
           type: 'success'
         })
       })
+      this.row_data.if_reviewed = 'Y'
+      // console.log('row.if_reviewed:', this.row_data.if_reviewed)
+      this.submitRowClick(this.row_data)
+      // this.fetchMeasure({ id: row.case_id })
       this.dialogFormVisible = false
     }
   }

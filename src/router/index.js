@@ -54,7 +54,7 @@ export const constantRoutes = [
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
-
+  // example/table
   {
     path: '/example',
     component: Layout,
@@ -84,12 +84,12 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        name: 'Form',
+        name: 'form',
         component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        meta: { title: 'AddCase', icon: 'form' }
       }
     ],
-    hidden: true
+    hidden: false
   },
 
   {
