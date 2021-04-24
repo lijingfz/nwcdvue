@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="100px">
       <el-form-item label="Case ID">
-        <el-input v-model="form.name" />
+        <el-input v-model="form.caseid" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">Add</el-button>
@@ -19,15 +19,15 @@ export default {
   data() {
     return {
       form: {
-        name: ''
+        caseid: ''
       }
     }
   },
   methods: {
     onSubmit() {
-      var isnum = /^[1]\d{8}[4]$/.test(this.form.name)
+      var isnum = /^[1]\d{8}[4]$/.test(this.form.caseid)
       if (isnum) {
-        const mydata = { caseid: this.form.name }
+        const mydata = { caseid: this.form.caseid }
         addData(mydata).then((response) => {
           console.log(response)
           this.$alert('数据写入Dynamodb，触发lambda完成添加，请等待1分钟再进行检查！', '注意：', {
@@ -48,7 +48,7 @@ export default {
           }
         })
       }
-      this.form.name = ''
+      this.form.caseid = ''
     },
     onCancel() {
       this.$message({

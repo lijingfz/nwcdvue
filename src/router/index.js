@@ -54,13 +54,27 @@ export const constantRoutes = [
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
-  // example/table
+
   {
-    path: '/example',
+    path: '/changepassword',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'changepassword',
+        name: 'changepassword',
+        component: () => import('@/views/changepassword/index'),
+        meta: { title: 'ChangePassword', icon: 'password' }
+      }
+    ],
+    hidden: false
+  },
+  // example/table    /example    /example/table
+  {
+    path: '/nwdqa',
+    component: Layout,
+    redirect: '/nwcdqa/table',
+    name: 'Nwcdqa',
+    meta: { title: 'Nwcdqa', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'table',

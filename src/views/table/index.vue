@@ -1,10 +1,11 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
+      <el-input v-model="listQuery.case_id" placeholder="case_id" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.reviewer" placeholder="reviewer" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.owner" placeholder="Case_owner" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.if_assign" placeholder="if_assign" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.if_reviewed" placeholder="if_reviewed" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.if_assign" placeholder="if_assign" style="width: 100px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.if_reviewed" placeholder="if_reviewed" style="width: 100px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- <el-input v-model="listQuery.reviewer" placeholder="Case_Reviewer" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" /> -->
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
@@ -20,7 +21,7 @@
     >
       <el-table-column align="center" label="ID" width="100">
         <template slot-scope="scope">
-          {{ scope.row.case_id }}
+          <el-link :href="'https://paragon-cn.amazon.com/hz/view-case?caseId=' + scope.row.case_id" target="_blank" type="success">{{ scope.row.case_id }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="Title">
@@ -87,7 +88,7 @@
 Such as, dev/prod environment, issue frequency, business impact etc."
               placement="top-start"
             >
-              <el-button>Measure 1 :</el-button>
+              <el-button>Problem understanding</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure1" class="filter-item" placeholder="Please select" @change="temp.measure1!=0?temp.measure1Score=score1:temp.measure1Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -101,7 +102,7 @@ Such as, dev/prod environment, issue frequency, business impact etc."
               content="Right troubleshooting approach:Collect and check appropriate log data/information,  investigation like seaching documents, self study, testing, reproduce, etc."
               placement="top-start"
             >
-              <el-button>Measure 2 :</el-button>
+              <el-button>Troubleshooting approach</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure2" class="filter-item" placeholder="Please select" @change="temp.measure2!=0?temp.measure2Score=score1:temp.measure2Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -121,7 +122,7 @@ Clearly write down the reproduced steps in the WL.
 Record your next action plan. （should be ok if it exists  in SOC）"
               placement="top-start"
             >
-              <el-button>Measure 3 :</el-button>
+              <el-button>WL record</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure3" class="filter-item" placeholder="Please select" @change="temp.measure3!=0?temp.measure3Score=score2:temp.measure3Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -135,7 +136,7 @@ Record your next action plan. （should be ok if it exists  in SOC）"
               content="Setting correct status on the case. Unassigned, WIP, PMA, MAC, PAA,"
               placement="top-start"
             >
-              <el-button>Measure 4 :</el-button>
+              <el-button>Case status</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure4" class="filter-item" placeholder="Please select" @change="temp.measure4!=0?temp.measure4Score=score2:temp.measure4Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -153,7 +154,7 @@ Record your next action plan. （should be ok if it exists  in SOC）"
                - Sev3/Sev4：defined SLA （12h/24h）(meaningful email reply)"
               placement="top-start"
             >
-              <el-button>Measure 5 :</el-button>
+              <el-button>1st correspondence</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure5" class="filter-item" placeholder="Please select" @change="temp.measure5!=0?temp.measure5Score=score2:temp.measure5Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -170,7 +171,7 @@ Record your next action plan. （should be ok if it exists  in SOC）"
 Reach an agreement with customer if you can’t meet MAC SLA and keep your promises"
               placement="top-start"
             >
-              <el-button>Measure 6 :</el-button>
+              <el-button>Timely work on backlogs</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure6" class="filter-item" placeholder="Please select" @change="temp.measure6!=0?temp.measure6Score=score2:temp.measure6Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -184,7 +185,7 @@ Reach an agreement with customer if you can’t meet MAC SLA and keep your promi
               content="Link or annotate the related case or ticket to the case and describe the relationship of them."
               placement="top-start"
             >
-              <el-button>Measure 7 :</el-button>
+              <el-button>Related case/ticket</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure7" class="filter-item" placeholder="Please select" @change="temp.measure7!=0?temp.measure7Score=score3:temp.measure7Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -200,7 +201,7 @@ Engage senior engineer, Ops or service team if you have no findings for a long t
 Track progress with Ops/Service team and record summary in WL after communicating in slack, chime or phone。 Need to push them when required."
               placement="top-start"
             >
-              <el-button>Measure 8 :</el-button>
+              <el-button>Senior/Ops/ST engagement</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure8" class="filter-item" placeholder="Please select" @change="temp.measure8!=0?temp.measure8Score=score2:temp.measure8Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -216,7 +217,7 @@ Contact TAM for more details if you have something unclear or communicating with
 Work with CS, TAM, BD, SA and MoD if necessary."
               placement="top-start"
             >
-              <el-button>Measure 9 :</el-button>
+              <el-button>Team(TAM/CS/BD etc) collaboration</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure9" class="filter-item" placeholder="Please select" @change="temp.measure9!=0?temp.measure9Score=score2:temp.measure9Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -230,7 +231,7 @@ Work with CS, TAM, BD, SA and MoD if necessary."
               content="Handover to someone else with clear summary in annotation when you are not in shift based on severity/business impact/customer expectation etc"
               placement="top-start"
             >
-              <el-button>Measure 10 :</el-button>
+              <el-button>Handover</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure10" class="filter-item" placeholder="Please select" @change="temp.measure10!=0?temp.measure10Score=score2:temp.measure10Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -244,7 +245,7 @@ Work with CS, TAM, BD, SA and MoD if necessary."
               content="Sincerely answer all customers questions and provide accurate operational technical advice with logical analysis."
               placement="top-start"
             >
-              <el-button>Measure 11 :</el-button>
+              <el-button>Customer Correspondence</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure11" class="filter-item" placeholder="Please select" @change="temp.measure11!=0?temp.measure11Score=score1:temp.measure11Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -258,7 +259,7 @@ Work with CS, TAM, BD, SA and MoD if necessary."
               content="Severity 5/1 email cases, ask for call in 1st response and call customer in subsequence case handling if required."
               placement="top-start"
             >
-              <el-button>Measure 12 :</el-button>
+              <el-button>High Sev handling</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure12" class="filter-item" placeholder="Please select" @change="temp.measure12!=0?temp.measure12Score=score4:temp.measure12Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -272,7 +273,7 @@ Work with CS, TAM, BD, SA and MoD if necessary."
               content="Set customer s expectation timely like cross account support policy, 3rd party issue,etc"
               placement="top-start"
             >
-              <el-button>Measure 13 :</el-button>
+              <el-button>Support Scope and Best Efforts</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure13" class="filter-item" placeholder="Please select" @change="temp.measure13!=0?temp.measure13Score=score5:temp.measure13Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -286,7 +287,7 @@ Work with CS, TAM, BD, SA and MoD if necessary."
               content="Need to email reply customer with the summary after discussing technical details or action plans during chat/call."
               placement="top-start"
             >
-              <el-button>Measure 14 :</el-button>
+              <el-button>Email reply after chat/call</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure14" class="filter-item" placeholder="Please select" @change="temp.measure14!=0?temp.measure14Score=score2:temp.measure14Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -302,7 +303,7 @@ Reply what you can get from customer’s logs/detail information.
 Describe clear steps for gathering the information/logs if required."
               placement="top-start"
             >
-              <el-button>Measure 15 :</el-button>
+              <el-button>Customer data/log request</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure15" class="filter-item" placeholder="Please select" @change="temp.measure15!=0?temp.measure15Score=score2:temp.measure15Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -320,7 +321,7 @@ Properly use standard template (Specific case category)
 Handle SYSKA alerts and sensitive info appropriately"
               placement="top-start"
             >
-              <el-button>Measure 16 :</el-button>
+              <el-button>Appropriate usage official doc/terms</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure16" class="filter-item" placeholder="Please select" @change="temp.measure16!=0?temp.measure16Score=score2:temp.measure16Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -337,7 +338,7 @@ Please try to write down customer’s real pain not technical pain.
 >>Clarify why customer want to do it."
               placement="top-start"
             >
-              <el-button>Measure 17 :</el-button>
+              <el-button>SOC</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure17" class="filter-item" placeholder="Please select" @change="temp.measure17!=0?temp.measure17Score=score2:temp.measure17Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -353,7 +354,7 @@ Try to understand customer‘s architecture and environment
 Try to check every possible cause for customer issue"
               placement="top-start"
             >
-              <el-button>Measure 18 :</el-button>
+              <el-button>Big picture</el-button>
             </el-tooltip>
             <el-select v-model="temp.measure18" class="filter-item" placeholder="Please select" @change="temp.measure18!=0?temp.measure18Score=score3:temp.measure18Score=0">
               <el-option v-for="item in checkResult" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -370,6 +371,9 @@ Try to check every possible cause for customer issue"
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">
             Cancel
+          </el-button>
+          <el-button v-show="temp.review_flag ==='N'" type="primary" @click="saveReviewResult()">
+            Save
           </el-button>
           <el-button v-show="temp.review_flag ==='N' || role === 2" type="primary" @click="handleReviewResult()">
             Confirm
@@ -645,6 +649,26 @@ export default {
         })
       })
       this.row_data.if_reviewed = 'Y'
+      // console.log('row.if_reviewed:', this.row_data.if_reviewed)
+      this.submitRowClick(this.row_data)
+      // this.fetchMeasure({ id: row.case_id })
+      this.dialogFormVisible = false
+    },
+    saveReviewResult(row) {
+      // console.log('chuan ru:', this.row_data)
+      this.temp.review_score = this.sumScore
+      // this.temp.review_flag = 'Y'
+      if (this.temp.remark === null) { this.temp.remark = 'null' }
+      if (this.temp.confirm === null) { this.temp.confirm = 'null' }
+      console.log('Handle Review result!', this.temp)
+      putReviewData(this.temp).then((response) => {
+        console.log(response)
+        this.$message({
+          message: '保存Review结果Success',
+          type: 'success'
+        })
+      })
+      // this.row_data.if_reviewed = 'Y'
       // console.log('row.if_reviewed:', this.row_data.if_reviewed)
       this.submitRowClick(this.row_data)
       // this.fetchMeasure({ id: row.case_id })

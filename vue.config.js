@@ -30,6 +30,7 @@ module.exports = {
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
+    // host: 'localhost',
     port: port,
     open: true,
     overlay: {
@@ -38,8 +39,8 @@ module.exports = {
     },
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: 'http://52.83.117.220:3001',
-        // ws: true,
+        target: 'http://localhost:3001',
+        // ws: true,  target: 'http://52.83.117.220:3001'
         secure: false,
         changeOrigin: true,
         pathRewrite: {
